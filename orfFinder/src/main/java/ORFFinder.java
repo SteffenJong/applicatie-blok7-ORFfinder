@@ -41,31 +41,33 @@ public class ORFFinder {
         this.frame2minus = this.frame1minus.substring(1);
         this.frame3minus = this.frame2minus.substring(1);
 
-        ORF[] ORFs = new ORF[1000];
+        ORF[] ORFs = new ORF[10000];
         String forInput = "";
+        List<String> tempDataList = new ArrayList<>();
         for (int i1 = 0; i1 < 6; i1++) {
-            if (i1 == 0) {
+            if (i1 == 0){
                 forInput = this.frame1plus;
-            } else if (i1 == 1) {
+            }else if (i1 == 1){
                 forInput = this.frame2plus;
-            } else if (i1 == 2) {
+            }else if (i1 == 2){
                 forInput = this.frame3plus;
-            } else if (i1 == 3) {
+            }else if (i1 == 3){
                 forInput = this.frame1minus;
-            } else if (i1 == 4) {
+            }else if (i1 == 4){
                 forInput = this.frame2minus;
-            } else if (i1 == 5) {
+            }else if (i1 == 5){
                 forInput = this.frame3minus;
             }
             String temp = "";
             boolean done = false;
             boolean startFound = false;
             int startIndex = 0;
-            List<String> tempDataList = new ArrayList<>();
+            tempDataList.clear();
             String buildingSequence = "";
             String buildingSequenceCopy = "";
-
             for (int i = 0; i < forInput.length(); ) {
+                System.out.println(forInput);
+                System.out.println(forInput.length());
                 try {
                     temp = forInput.substring(i, i + 3);
                 } catch (StringIndexOutOfBoundsException e) {
@@ -78,25 +80,26 @@ public class ORFFinder {
                     if (startFound) {
                         this.ORFCounter++;
                         ORFs[this.ORFCounter] = new ORF();
-                        ORFs[this.ORFCounter].setStartPosition(startIndex+1);
-                        if (i1 == 0) {
+                        ORFs[this.ORFCounter].setStartPosition(startIndex + 1);
+                        if (i1 == 0){
                             ORFs[this.ORFCounter].setDirection("frame +1");
-                        } else if (i1 == 1) {
+                        }else if (i1 == 1){
                             ORFs[this.ORFCounter].setDirection("frame +2");
-                        } else if (i1 == 2) {
+                        }else if (i1 == 2){
                             ORFs[this.ORFCounter].setDirection("frame +3");
-                        } else if (i1 == 3) {
+                        }else if (i1 == 3){
                             ORFs[this.ORFCounter].setDirection("frame -1");
-                        } else if (i1 == 4) {
+                        }else if (i1 == 4){
                             ORFs[this.ORFCounter].setDirection("frame -2");
-                        } else if (i1 == 5) {
+                        }else if (i1 == 5){
                             ORFs[this.ORFCounter].setDirection("frame -3");
                         }
                         ORFs[this.ORFCounter].setLength(i - startIndex);
                         ORFs[this.ORFCounter].setORFNumber(this.ORFCounter);
                         //The assembly of the ORF sequence   buildingSequence buildingSequenceCopy
                         int i3 = i / 3;
-                        while (startIndex / 3 <= i3) {
+                        int i4 = startIndex / 3;
+                        while (i4 <= i3) {
                             if (i3 >= tempDataList.size()) {
                                 ;
                             } else {
@@ -105,83 +108,85 @@ public class ORFFinder {
                             }
                             i3--;
                         }
-                        tempDataList.clear();
                         ORFs[this.ORFCounter].setSequence(buildingSequence);
+                        buildingSequence = "";
+                        buildingSequenceCopy = "";
                         this.foundORFs.put(this.ORFCounter, ORFs[this.ORFCounter]);
                     }
                     startFound = false;
                 } else if (temp.equals(this.stopCodons.get(1))) {
                     if (startFound) {
                         this.ORFCounter++;
-                        System.out.println(this.ORFCounter);
                         ORFs[this.ORFCounter] = new ORF();
-                        ORFs[this.ORFCounter].setStartPosition(startIndex+1);
-                        if (i1 == 0) {
+                        ORFs[this.ORFCounter].setStartPosition(startIndex + 1);
+                        if (i1 == 0){
                             ORFs[this.ORFCounter].setDirection("frame +1");
-                        } else if (i1 == 1) {
+                        }else if (i1 == 1){
                             ORFs[this.ORFCounter].setDirection("frame +2");
-                        } else if (i1 == 2) {
+                        }else if (i1 == 2){
                             ORFs[this.ORFCounter].setDirection("frame +3");
-                        } else if (i1 == 3) {
+                        }else if (i1 == 3){
                             ORFs[this.ORFCounter].setDirection("frame -1");
-                        } else if (i1 == 4) {
+                        }else if (i1 == 4){
                             ORFs[this.ORFCounter].setDirection("frame -2");
-                        } else if (i1 == 5) {
+                        }else if (i1 == 5){
                             ORFs[this.ORFCounter].setDirection("frame -3");
                         }
                         ORFs[this.ORFCounter].setLength(i - startIndex);
                         ORFs[this.ORFCounter].setORFNumber(this.ORFCounter);
                         //The assembly of the ORF sequence   buildingSequence buildingSequenceCopy
                         int i3 = i / 3;
-                        while (startIndex / 3 <= i3) {
+                        int i4 = startIndex / 3;
+                        while (i4 <= i3) {
                             if (i3 >= tempDataList.size()) {
                                 ;
                             } else {
-                                buildingSequenceCopy = buildingSequence + tempDataList.get(i3);
+                                buildingSequenceCopy = tempDataList.get(i3) + buildingSequence;
                                 buildingSequence = buildingSequenceCopy;
                             }
                             i3--;
                         }
-                        tempDataList.clear();
                         ORFs[this.ORFCounter].setSequence(buildingSequence);
-
+                        buildingSequence = "";
+                        buildingSequenceCopy = "";
                         this.foundORFs.put(this.ORFCounter, ORFs[this.ORFCounter]);
                     }
                     startFound = false;
                 } else if (temp.equals(this.stopCodons.get(2))) {
                     if (startFound) {
                         this.ORFCounter++;
-                        System.out.println(this.ORFCounter);
                         ORFs[this.ORFCounter] = new ORF();
-                        ORFs[this.ORFCounter].setStartPosition(startIndex+1);
-                        if (i1 == 0) {
+                        ORFs[this.ORFCounter].setStartPosition(startIndex + 1);
+                        if (i1 == 0){
                             ORFs[this.ORFCounter].setDirection("frame +1");
-                        } else if (i1 == 1) {
+                        }else if (i1 == 1){
                             ORFs[this.ORFCounter].setDirection("frame +2");
-                        } else if (i1 == 2) {
+                        }else if (i1 == 2){
                             ORFs[this.ORFCounter].setDirection("frame +3");
-                        } else if (i1 == 3) {
+                        }else if (i1 == 3){
                             ORFs[this.ORFCounter].setDirection("frame -1");
-                        } else if (i1 == 4) {
+                        }else if (i1 == 4){
                             ORFs[this.ORFCounter].setDirection("frame -2");
-                        } else if (i1 == 5) {
+                        }else if (i1 == 5){
                             ORFs[this.ORFCounter].setDirection("frame -3");
                         }
                         ORFs[this.ORFCounter].setLength(i - startIndex);
                         ORFs[this.ORFCounter].setORFNumber(this.ORFCounter);
                         //The assembly of the ORF sequence   buildingSequence buildingSequenceCopy
                         int i3 = i / 3;
-                        while (startIndex / 3 <= i3) {
+                        int i4 = startIndex / 3;
+                        while (i4 <= i3) {
                             if (i3 >= tempDataList.size()) {
                                 ;
                             } else {
-                                buildingSequenceCopy = buildingSequence + tempDataList.get(i3);
+                                buildingSequenceCopy = tempDataList.get(i3) + buildingSequence;
                                 buildingSequence = buildingSequenceCopy;
                             }
                             i3--;
                         }
-                        tempDataList.clear();
                         ORFs[this.ORFCounter].setSequence(buildingSequence);
+                        buildingSequence = "";
+                        buildingSequenceCopy = "";
                         this.foundORFs.put(this.ORFCounter, ORFs[this.ORFCounter]);
                     }
                     startFound = false;
@@ -191,9 +196,9 @@ public class ORFFinder {
                 }
                 i += 3;
             }
-
         }
     }
 }
+
 
 
